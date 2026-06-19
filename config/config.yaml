@@ -1,0 +1,135 @@
+study_area:
+  city: "Hyderabad"
+  boundary_file: "data/raw/boundary/ghmc.geojson"
+  crs: "EPSG:32643"
+  resolution: 30
+
+data:
+  temporal:
+    start: "2018-06-01"
+    end: "2024-09-30"
+    summer_months: [3, 4, 5, 6, 10, 11, 12]
+  landsat:
+    collection: "LANDSAT/LC08/C02/T1_L2"
+    path_row: [[144, 48], [144, 49]]
+    cloud_threshold: 10
+  ecostress:
+    collection: "ECOSTRESS/ECO2LSTE/001"
+    resample_to: 30
+  sentinel2:
+    collection: "COPERNICUS/S2_SR_HARMONIZED"
+    lulc_classes: 6
+  modis:
+    collection: "MODIS/061/MYD11A1"
+    use_for_fusion: true
+  era5:
+    variables: [t2m, d2m, u10, v10, sp, ssrd, strd, tp]
+    downscale: "bilinear_lapse_rate"
+  urban:
+    osm_features: ["building", "highway", "landuse", "natural", "waterway"]
+    ghsl: "GHS_BUILT_S_2020"
+    wudapt_lcz: true
+  air_quality:
+    cpcb: true
+    pollutants: ["PM25", "NO2", "O3"]
+
+features:
+  target: "LST"
+  static: 18
+  temporal: 8
+  indices:
+    - name: "NDVI"
+    - name: "NDBI"
+    - name: "MNDWI"
+    - name: "NDBaI"
+    - name: "ALBEDO"
+    - name: "EMISSIVITY"
+    - name: "FVC"
+    - name: "LAI"
+    - name: "SVF"
+    - name: "Z0"
+    - name: "LCZ"
+
+model:
+  architecture: "SegFormerSEBTwinTFT"
+  encoder:
+    variant: "MiT-B5"
+    pretrained: true
+    in_channels: 26
+  temporal_fusion:
+    type: "CuboidAttention"
+    cuboid_size: [4, 4, 4]
+    global_vectors: 8
+  decoder:
+    lst_head: "conv_1x1"
+    seb_head: "mlp_512_to_5"
+    flux_head: "mlp_512_to_4"
+  mc_dropout:
+    enabled: true
+    n_samples: 30
+  use_graph: true
+
+loss:
+  weights:
+    data: 1.0
+    seb: 0.05
+    flux: 0.05
+    temporal: 0.02
+    grad: 0.1
+    mono: 0.01
+    graph: 0.02
+
+training:
+  patch_size: 256
+  stride: 128
+  batch_size: 16
+  epochs: 150
+  early_stopping: 20
+  optimizer: "AdamW"
+  lr: 1e-4
+  weight_decay: 1e-4
+  scheduler: "cosine_warm_restarts"
+  T_0: 30
+  T_mult: 2
+  augmentations: ["hflip", "vflip", "rotate90"]
+  mixed_precision: true
+  spatial_cv_folds: 5
+  block_size: 5000
+
+interventions:
+  types:
+    - cool_roof_paint
+    - cool_roof_membrane
+    - green_roof_extensive
+    - green_roof_intensive
+    - street_trees
+    - park_trees
+    - urban_park
+    - cool_pavement
+    - permeable_pavement
+    - water_body
+
+optimization:
+  algorithm: "NSGA-III"
+  n_zones: 500
+  budgets_cr: [10, 50, 100]
+  pop_size: 300
+  n_generations: 500
+  ref_dirs_partitions: 15
+  knee_selection: true
+  topsis_ranking: true
+
+evaluation:
+  target_rmse: 1.5
+  target_mae: 1.2
+  target_r2: 0.85
+  seb_closure_threshold: 20
+  uncertainty_coverage: 0.95
+
+outputs:
+  dir: "outputs/"
+  maps_subdir: "maps/"
+  models_subdir: "models/"
+  reports_subdir: "reports/"
+  rasters_subdir: "rasters/"
+  dashboard_subdir: "dashboard/"

@@ -1,0 +1,30 @@
+__pycache__/
+*.pyc
+*.pyo
+.env
+venv/
+.venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.vscode/
+.idea/
+
+# Data files (large)
+data/raw/*.tif
+data/processed/**
+!data/processed/.gitkeep
+
+# Model checkpoints
+outputs/models/*.pth
+outputs/models/*.pt
+
+# Streamlit cache
+.streamlit/
+
+# OS
+Thumbs.db
+.DS_Store

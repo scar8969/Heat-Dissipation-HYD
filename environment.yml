@@ -1,0 +1,42 @@
+name: urban-heat
+channels:
+  - conda-forge
+  - pytorch
+  - defaults
+dependencies:
+  - python=3.11
+  - pytorch=2.1.0
+  - torchvision
+  - numpy
+  - pandas
+  - scikit-learn
+  - scipy
+  - geopandas
+  - rasterio
+  - xarray
+  - rioxarray
+  - pyproj
+  - shapely
+  - osmnx
+  - earthengine-api
+  - cdsapi
+  - matplotlib
+  - seaborn
+  - folium
+  - plotly
+  - streamlit
+  - pyyaml
+  - tqdm
+  - pip
+  - pip:
+    - captum
+    - pymoo
+    - alibi
+    - timm
+    - transformers
+    - hydra-core
+    - omegaconf
+    - wandb
+    - geemap
+    - optuna
+    - h5py

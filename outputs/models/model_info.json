@@ -1,0 +1,19 @@
+{
+  "architecture": "SegFormerPINN",
+  "variant": "MiT-B5",
+  "in_channels": 26,
+  "patch_size": 256,
+  "n_patches": 99,
+  "n_train": 69,
+  "n_val": 14,
+  "n_test": 16,
+  "height": 1300,
+  "width": 1600,
+  "pixel_size": 30,
+  "bounds": [
+    78.25,
+    17.2,
+    78.7,
+    17.55
+  ]
+}
