@@ -13,14 +13,14 @@ build/
 .vscode/
 .idea/
 
-# Data files (large)
-data/raw/*.tif
-data/processed/**
+# Data files (large - tracked via Git LFS)
+# data/raw/*.tif - tracked by LFS
+# data/processed/** - tracked by LFS
 !data/processed/.gitkeep
 
 # Model checkpoints
-outputs/models/*.pth
-outputs/models/*.pt
+# outputs/models/*.pth - tracked by LFS
+# outputs/models/*.pt - tracked by LFS
 
 # Streamlit cache
 .streamlit/
